@@ -1,0 +1,38 @@
+-- Simple Infinite Jump Simulation in pure Lua
+
+local player = {
+    y = 0,          -- height
+    velocity = 0,
+    gravity = -0.5,
+    jumpPower = 10,
+    canJump = true
+}
+
+function jump()
+    player.velocity = player.jumpPower
+    print("Jump! Height:", player.y)
+end
+
+function update()
+    player.y = player.y + player.velocity
+    player.velocity = player.velocity + player.gravity
+
+    -- simulate ground
+    if player.y <= 0 then
+        player.y = 0
+        player.velocity = 0
+        player.canJump = true
+    end
+end
+
+-- Infinite jump version (always allow jump)
+function infiniteJump()
+    jump() -- you can always jump, no ground check
+end
+
+-- Simulate loop
+for i = 1, 10 do
+    infiniteJump()  -- jump every frame
+    update()
+    print(string.format("Frame %d | Height: %.2f | Velocity: %.2f", i, player.y, player.velocity))
+end
