@@ -1,0 +1,20 @@
+-- Simple Infinity Jump LocalScript
+-- Works locally (client-side)
+
+local UserInputService = game:GetService("UserInputService")
+local player = game:GetService("Players").LocalPlayer
+local humanoid
+
+-- detect character + humanoid
+player.CharacterAdded:Connect(function(char)
+    humanoid = char:WaitForChild("Humanoid")
+end)
+if player.Character then
+    humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+end
+
+UserInputService.JumpRequest:Connect(function()
+    if humanoid then
+        humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+end)
