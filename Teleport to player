@@ -1,0 +1,19 @@
+-- Teleport Script
+local Players = game:GetService("Players")
+
+-- Function para i-teleport ang isang player sa isa pang player
+local function teleportPlayer(playerToTeleport, targetPlayer)
+    if playerToTeleport and targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = targetPlayer.Character.HumanoidRootPart
+        playerToTeleport.Character:SetPrimaryPartCFrame(hrp.CFrame + Vector3.new(0,5,0)) -- Magka-offset para hindi magsiksikan
+    end
+end
+
+-- Example usage: teleport player "Player1" sa "Player2"
+Players.PlayerAdded:Connect(function(player)
+    -- Halimbawa, automatic teleport sa first player na pumasok
+    local target = Players:FindFirstChild("Player2")
+    if target then
+        teleportPlayer(player, target)
+    end
+end)
