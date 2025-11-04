@@ -1,0 +1,100 @@
+-- LocalScript Executor Version
+-- Ilagay lang sa LocalScript executor at patakbuhin
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local TweenService = game:GetService("TweenService")
+
+-- === GUI ===
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "BigOneGUI"
+ScreenGui.Parent = game:GetService("CoreGui")
+
+-- Loading Screen
+local LoadingFrame = Instance.new("Frame")
+LoadingFrame.Size = UDim2.new(0.5, 0, 0.2, 0)
+LoadingFrame.Position = UDim2.new(0.25, 0, 0.4, 0)
+LoadingFrame.BackgroundColor3 = Color3.fromRGB(50,50,50)
+LoadingFrame.Parent = ScreenGui
+
+local LoadingBar = Instance.new("Frame")
+LoadingBar.Size = UDim2.new(0,0,1,0)
+LoadingBar.BackgroundColor3 = Color3.fromRGB(0,255,0)
+LoadingBar.Parent = LoadingFrame
+
+-- Skip Button
+local SkipButton = Instance.new("TextButton")
+SkipButton.Size = UDim2.new(0.2,0,0.4,0)
+SkipButton.Position = UDim2.new(0.4,0,0.3,0)
+SkipButton.Text = "Skip"
+SkipButton.Parent = ScreenGui
+
+-- Animate loading bar to 50%
+local tweenInfo = TweenInfo.new(2)
+local tween = TweenService:Create(LoadingBar, tweenInfo, {Size = UDim2.new(0.5,0,1,0)})
+tween:Play()
+
+SkipButton.MouseButton1Click:Connect(function()
+    LoadingFrame:Destroy()
+    SkipButton:Destroy()
+end)
+
+-- Main GUI
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0.4,0,0.6,0)
+MainFrame.Position = UDim2.new(0.3,0,0.2,0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+MainFrame.Visible = false
+MainFrame.Parent = ScreenGui
+
+local Title = Instance.new("TextLabel")
+Title.Text = "THE BIG ONE"
+Title.Size = UDim2.new(1,0,0.1,0)
+Title.Position = UDim2.new(0,0,0,0)
+Title.BackgroundTransparency = 1
+Title.TextScaled = true
+Title.TextColor3 = Color3.fromRGB(255,255,255)
+Title.Parent = MainFrame
+
+tween.Completed:Connect(function()
+    LoadingFrame:Destroy()
+    SkipButton:Destroy()
+    MainFrame.Visible = true
+end)
+
+-- Player buttons with rainbow text
+local function createPlayerButton(player)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1,0,0,50)
+    button.BackgroundColor3 = Color3.fromRGB(40,40,40)
+    button.Text = player.Name
+    button.TextScaled = true
+    button.Parent = MainFrame
+
+    -- Rainbow effect
+    spawn(function()
+        while button.Parent do
+            for i = 0,1,0.01 do
+                button.TextColor3 = Color3.fromHSV(i,1,1)
+                wait(0.05)
+            end
+        end
+    end)
+
+    -- Teleport to player
+    button.MouseButton1Click:Connect(function()
+        if player.Character and LocalPlayer.Character and player.Character.PrimaryPart then
+            LocalPlayer.Character:MoveTo(player.Character.PrimaryPart.Position)
+        end
+    end)
+end
+
+for _, player in pairs(Players:GetPlayers()) do
+    if player ~= LocalPlayer then
+        createPlayerButton(player)
+    end
+end
+
+Players.PlayerAdded:Connect(function(player)
+    createPlayerButton(player)
+end)
